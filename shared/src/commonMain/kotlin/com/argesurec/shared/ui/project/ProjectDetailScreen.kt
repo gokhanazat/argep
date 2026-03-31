@@ -10,9 +10,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.FileDownload
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.*
@@ -294,7 +294,7 @@ fun ProjectFileItem(file: io.github.jan.supabase.storage.FileObject, onDelete: (
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Icon(
-            Icons.Default.Description,
+            Icons.Default.List,
             contentDescription = null,
             tint = ArgepColors.Navy600,
             modifier = Modifier.size(24.dp)
@@ -305,7 +305,7 @@ fun ProjectFileItem(file: io.github.jan.supabase.storage.FileObject, onDelete: (
         }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             IconButton(onClick = { /* İndirme henüz eklenmedi */ }) {
-                Icon(Icons.Default.FileDownload, contentDescription = "İndir", tint = ArgepColors.Slate600)
+                Icon(Icons.Default.Share, contentDescription = "İndir", tint = ArgepColors.Slate600)
             }
             IconButton(onClick = onDelete) {
                 Icon(Icons.Default.Delete, contentDescription = "Sil", tint = ArgepColors.Error)

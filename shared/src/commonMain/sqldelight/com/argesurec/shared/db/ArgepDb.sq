@@ -1,0 +1,41 @@
+CREATE TABLE ProjectEntity (
+    id TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT,
+    status TEXT NOT NULL,
+    phase TEXT NOT NULL,
+    progress REAL NOT NULL,
+    created_at TEXT NOT NULL
+);
+
+CREATE TABLE TaskEntity (
+    id TEXT PRIMARY KEY NOT NULL,
+    project_id TEXT NOT NULL,
+    title TEXT NOT NULL,
+    description TEXT,
+    status TEXT NOT NULL,
+    priority TEXT NOT NULL,
+    assignee_id TEXT,
+    due_date TEXT,
+    created_at TEXT NOT NULL
+);
+
+insertProject:
+INSERT OR REPLACE INTO ProjectEntity(id, name, description, status, phase, progress, created_at)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+selectAllProjects:
+SELECT * FROM ProjectEntity;
+
+deleteAllProjects:
+DELETE FROM ProjectEntity;
+
+insertTask:
+INSERT OR REPLACE INTO TaskEntity(id, project_id, title, description, status, priority, assignee_id, due_date, created_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectTasksForProject:
+SELECT * FROM TaskEntity WHERE project_id = ?;
+
+deleteAllTasks:
+DELETE FROM TaskEntity;

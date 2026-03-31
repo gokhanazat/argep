@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ARGEP</string>
+    <string name="login_title">Giriş Yap</string>
+    <string name="register_title">Kayıt Ol</string>
+    <string name="email_label">E-posta</string>
+    <string name="password_label">Şifre</string>
+    <string name="login_button">Giriş</string>
+    <string name="register_button">Kayıt Ol</string>
+    <string name="projects_title">Projelerim</string>
+    <string name="tasks_title">Görevlerim</string>
+    <string name="team_title">Ekibim</string>
+</resources>

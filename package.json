@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "./gradlew :webApp:wasmJsBrowserDistribution"
+    "build": "./gradlew :webApp:wasmJsBrowserDistribution --no-daemon && mkdir -p public && cp -r webApp/build/dist/wasmJs/productionExecutable/* public/"
   }
 }

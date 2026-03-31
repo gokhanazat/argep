@@ -17,6 +17,7 @@ koin-compose = "4.0.0"
 supabase = "3.0.0"
 voyager = "1.1.0-beta03"
 sqldelight = "2.1.0"
+androidx-lifecycle = "2.8.2"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -59,6 +60,10 @@ voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voy
 sqldelight-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
 sqldelight-sqlite = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
 sqldelight-web = { module = "app.cash.sqldelight:web-worker-driver", version.ref = "sqldelight" }
+
+# Lifecycle (Multiplatform)
+androidx-lifecycle-viewmodel = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtime-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

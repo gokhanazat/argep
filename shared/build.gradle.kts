@@ -100,3 +100,25 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 }
+
+// WASM Environment Variable Injection Task
+tasks.register("injectWasmEnv") {
+    doFirst {
+        val supabaseUrl = System.getenv("SUPABASE_URL") ?: properties.getProperty("SUPABASE_URL")?.removeSurrounding("\"") ?: ""
+        val supabaseKey = System.getenv("SUPABASE_ANON_KEY") ?: properties.getProperty("SUPABASE_ANON_KEY")?.removeSurrounding("\"") ?: ""
+        
+        val configFile = file("src/wasmJsMain/kotlin/com/argesurec/shared/SupabaseConfig.kt")
+        if (configFile.exists()) {
+            var content = configFile.readText()
+            content = content.replace("SUPABASE_URL_PLACEHOLDER", supabaseUrl)
+            content = content.replace("SUPABASE_ANON_KEY_PLACEHOLDER", supabaseKey)
+            configFile.writeText(content)
+            println("WASM Environment variables injected successfully into ${configFile.name}")
+        }
+    }
+}
+
+// Her derlemeden önce enjeksiyonu yap
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile>().configureEach {
+    dependsOn("injectWasmEnv")
+}

@@ -1,8 +1,8 @@
 package com.argesurec.shared
 
 actual object SupabaseConfig {
-    actual val URL: String = getEnvUrl()
-    actual val ANON_KEY: String = getEnvKey()
+    actual val URL: String = "SUPABASE_URL_PLACEHOLDER"
+    actual val ANON_KEY: String = "SUPABASE_ANON_KEY_PLACEHOLDER"
 }
 
 /**

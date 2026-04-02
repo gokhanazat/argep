@@ -120,7 +120,7 @@ class TeamViewModel(
                     _actionMessage.emit(result.error ?: "Hata (HTTP $status)")
                 }
             } catch (e: Exception) {
-                _actionMessage.emit(e.message ?: "Bağlantı Hatası")
+                _actionMessage.emit("Hata: ${e::class.simpleName} - ${e.message ?: "Detay Yok"}")
             } finally {
                 _isActionLoading.value = false
             }

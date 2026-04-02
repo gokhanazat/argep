@@ -83,8 +83,6 @@ class TeamViewModel(
 
     fun inviteMember(email: String, role: String, projectId: String) {
         viewModelScope.launch {
-            println("Diagnostic: inviteMember called for $email in project $projectId")
-            _actionMessage.emit("🔍 İşlem başlatılıyor...")
             _isActionLoading.value = true
             try {
                 if (projectId == "global" || projectId.isEmpty()) {

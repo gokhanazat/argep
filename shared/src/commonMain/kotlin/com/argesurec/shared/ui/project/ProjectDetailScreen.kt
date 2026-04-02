@@ -78,6 +78,8 @@ class ProjectDetailScreen(private val projectId: String) : Screen {
         val snackbarHostState = remember { SnackbarHostState() }
         
         val projectsActionMessage by projectsViewModel.actionMessage.collectAsState()
+        val teamActionMessage by teamViewModel.actionMessage.collectAsState()
+        val expenseActionMessage by expenseViewModel.actionMessage.collectAsState()
 
         val filePicker = com.argesurec.shared.util.rememberFilePicker { file ->
             file?.let { projectFilesViewModel.uploadFile(projectId, it) }
@@ -95,6 +97,20 @@ class ProjectDetailScreen(private val projectId: String) : Screen {
             projectsActionMessage?.let {
                 snackbarHostState.showSnackbar(it)
                 projectsViewModel.clearActionMessage()
+            }
+        }
+
+        LaunchedEffect(teamActionMessage) {
+            teamActionMessage?.let {
+                snackbarHostState.showSnackbar(it)
+                teamViewModel.clearActionMessage()
+            }
+        }
+
+        LaunchedEffect(expenseActionMessage) {
+            expenseActionMessage?.let {
+                snackbarHostState.showSnackbar(it)
+                expenseViewModel.clearActionMessage()
             }
         }
 

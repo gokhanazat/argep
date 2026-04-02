@@ -101,7 +101,7 @@ class TeamScreen(private val projectId: String?) : Screen {
                 TopAppBar(
                     title = {
                         Column {
-                            Text("Ekip Yönetimi (v1.1 - Atomic)", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold), color = ArgepColors.Navy900)
+                            Text("Ekip Yönetimi (PROJE MODU)", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold), color = ArgepColors.Navy900)
                             Text(if (projectId != null) "Projeye Dahil Üyeler" else "Tüm Ekip Üyeleri", style = MaterialTheme.typography.labelSmall, color = ArgepColors.Slate500)
                         }
                     },
@@ -149,25 +149,30 @@ class TeamScreen(private val projectId: String?) : Screen {
                                 )
                             )
                             
-                            Button(
-                                onClick = { if (!isActionLoading) showInviteDialog = true },
-                                modifier = Modifier.height(48.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = ArgepColors.Navy700),
-                                shape = RoundedCornerShape(10.dp),
-                                elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp),
-                                enabled = !isActionLoading
-                            ) {
-                                if (isActionLoading) {
-                                    CircularProgressIndicator(
-                                        modifier = Modifier.size(18.dp),
-                                        color = androidx.compose.ui.graphics.Color.White,
-                                        strokeWidth = 2.dp
-                                    )
-                                } else {
-                                    Icon(Icons.Default.Add, null, modifier = Modifier.size(18.dp))
+                            if (projectId != null) {
+                                Button(
+                                    onClick = { if (!isActionLoading) showInviteDialog = true },
+                                    modifier = Modifier.height(48.dp),
+                                    colors = ButtonDefaults.buttonColors(containerColor = ArgepColors.Navy700),
+                                    shape = RoundedCornerShape(10.dp),
+                                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp),
+                                    enabled = !isActionLoading
+                                ) {
+                                    if (isActionLoading) {
+                                        CircularProgressIndicator(
+                                            modifier = Modifier.size(18.dp),
+                                            color = androidx.compose.ui.graphics.Color.White,
+                                            strokeWidth = 2.dp
+                                        )
+                                    } else {
+                                        Icon(Icons.Default.Add, null, modifier = Modifier.size(18.dp))
+                                    }
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text("Yeni Üye Ekle", style = MaterialTheme.typography.labelLarge)
                                 }
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("Yeni Üye Ekle", style = MaterialTheme.typography.labelLarge)
+                            } else {
+                                // Eklenemez uyarısı veya boşluk
+                                Text("Üye eklemek için proje seçin", style = MaterialTheme.typography.labelSmall, color = ArgepColors.Slate400)
                             }
                         }
 

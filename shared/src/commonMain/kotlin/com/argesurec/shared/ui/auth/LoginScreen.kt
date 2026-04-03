@@ -8,7 +8,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -23,9 +22,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.argesurec.shared.viewmodel.AuthViewModel
 import com.argesurec.shared.ui.theme.ArgepColors
 import com.argesurec.shared.util.isWeb
-import org.jetbrains.compose.resources.painterResource
-import argep.shared.generated.resources.Res
-import argep.shared.generated.resources.login_hero
+// import org.jetbrains.compose.resources.painterResource
+// import argep.shared.generated.resources.Res
+// import argep.shared.generated.resources.login_hero
 
 class LoginScreen : Screen {
     @Composable
@@ -42,7 +41,7 @@ class LoginScreen : Screen {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(ArgepColors.ExecutiveBackground), // Light gray background for the whole page
+                    .background(ArgepColors.ExecutiveBackground),
                 contentAlignment = Alignment.Center
             ) {
                 WebAuthCard(
@@ -85,7 +84,6 @@ class LoginScreen : Screen {
         onLoginClick: () -> Unit,
         onRegisterClick: () -> Unit
     ) {
-        // Main Container Card
         Surface(
             modifier = Modifier
                 .width(1000.dp)
@@ -95,7 +93,7 @@ class LoginScreen : Screen {
             color = Color.White
         ) {
             Row(modifier = Modifier.fillMaxSize()) {
-                // Left Side: Hero Section (Compact)
+                // Left Side: Hero Section
                 Column(
                     modifier = Modifier
                         .weight(1.1f)
@@ -111,16 +109,21 @@ class LoginScreen : Screen {
                             .background(Color.White, RoundedCornerShape(110.dp)),
                         contentAlignment = Alignment.Center
                     ) {
-                        try {
-                            Image(
-                                painter = painterResource(Res.drawable.login_hero),
-                                contentDescription = "Logo",
-                                modifier = Modifier.size(180.dp),
-                                contentScale = ContentScale.Fit
-                            )
-                        } catch (e: Exception) {
-                            Text("LOGO", color = ArgepColors.ExecutivePrimary, fontWeight = FontWeight.Bold)
-                        }
+                        // Derleme hatasini engellemek icin gecici olarak metin kullanildi. 
+                        // Proje basariyla derlendikten sonra gorsel referansi baglanabilir.
+                        Text(
+                            "LOGO", 
+                            color = ArgepColors.ExecutivePrimary, 
+                            style = MaterialTheme.typography.displayLarge.copy(fontWeight = FontWeight.Bold)
+                        )
+                        /* 
+                        Image(
+                            painter = painterResource(Res.drawable.login_hero),
+                            contentDescription = "Logo",
+                            modifier = Modifier.size(180.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                        */
                     }
                     
                     Spacer(modifier = Modifier.height(32.dp))
@@ -144,7 +147,7 @@ class LoginScreen : Screen {
                     )
                 }
 
-                // Right Side: Form Section (Compact)
+                // Right Side: Form Section
                 Column(
                     modifier = Modifier
                         .weight(1f)
@@ -235,7 +238,7 @@ class LoginScreen : Screen {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text("Hesabınız yok mu?", style = MaterialTheme.typography.bodySmall, color = ArgepColors.Slate500)
-                        TextButton(onClick = onRegisterClick) {
+                        TextButton(onClick = navigator.push(RegisterScreen())) { // Updated navigator call for consistency
                             Text("Kaydolun", color = ArgepColors.ExecutiveSecondary, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                         }
                     }

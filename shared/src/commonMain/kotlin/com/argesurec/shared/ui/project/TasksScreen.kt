@@ -30,6 +30,8 @@ import com.argesurec.shared.ui.components.LoadingScreen
 import com.argesurec.shared.ui.theme.ArgepColors
 import com.argesurec.shared.util.UiState
 import com.argesurec.shared.viewmodel.TaskViewModel
+import com.argesurec.shared.viewmodel.TeamViewModel
+import com.argesurec.shared.viewmodel.TeamData
 
 class TasksScreen(private val milestoneId: String) : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -37,10 +39,28 @@ class TasksScreen(private val milestoneId: String) : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val viewModel = koinViewModel<TaskViewModel>()
+        val teamViewModel = koinViewModel<TeamViewModel>()
+        
         val state by viewModel.state.collectAsState()
+        val teamState by teamViewModel.state.collectAsState()
+        var showAddTaskDialog by remember { mutableStateOf(false) }
 
         LaunchedEffect(milestoneId) {
             viewModel.loadTasks(milestoneId)
+            val proId = viewModel.getProjectIdForTask(milestoneId)
+            proId?.let { teamViewModel.loadTeamForProject(it) }
+        }
+
+        if (showAddTaskDialog) {
+            val teamMembers = (teamState as? UiState.Success)?.data?.members ?: emptyList()
+            AddTaskDialog(
+                teamMembers = teamMembers,
+                onDismiss = { showAddTaskDialog = false },
+                onConfirm = { title, description, priority, assignedTo ->
+                    viewModel.createTask(milestoneId, title, description, priority, assignedTo)
+                    showAddTaskDialog = false
+                }
+            )
         }
 
         Scaffold(
@@ -62,7 +82,7 @@ class TasksScreen(private val milestoneId: String) : Screen {
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                         Button(
-                            onClick = { /* Görev Ekle */ },
+                            onClick = { showAddTaskDialog = true },
                             colors = ButtonDefaults.buttonColors(containerColor = ArgepColors.Navy700),
                             shape = RoundedCornerShape(7.dp)
                         ) {
@@ -82,9 +102,9 @@ class TasksScreen(private val milestoneId: String) : Screen {
                 is UiState.Error -> ErrorScreen(uiState.message, onRetry = { viewModel.loadTasks(milestoneId) })
                 is UiState.Success -> {
                     val tasks = uiState.data.tasks
-                    KanbanBoard(tasks) { task ->
-                        navigator.push(TaskDetailScreen(task.id))
-                    }
+                    KanbanBoard(tasks, onTaskClick = { task ->
+                        navigator.push(TaskDetailScreen(task.id!!))
+                    }, onAddTaskClick = { showAddTaskDialog = true })
                 }
             }
         }
@@ -92,7 +112,7 @@ class TasksScreen(private val milestoneId: String) : Screen {
 }
 
 @Composable
-fun KanbanBoard(tasks: List<Task>, onTaskClick: (Task) -> Unit) {
+fun KanbanBoard(tasks: List<Task>, onTaskClick: (Task) -> Unit, onAddTaskClick: () -> Unit) {
     val statuses = listOf("Bekliyor", "Devam Ediyor", "Tamamlandı")
     
     Row(
@@ -110,6 +130,7 @@ fun KanbanBoard(tasks: List<Task>, onTaskClick: (Task) -> Unit) {
                 title = status,
                 tasks = tasks.filter { it.status == targetEnum },
                 onTaskClick = onTaskClick,
+                onAddTaskClick = onAddTaskClick,
                 modifier = Modifier.width(320.dp)
             )
         }
@@ -121,6 +142,7 @@ fun KanbanColumn(
     title: String,
     tasks: List<Task>,
     onTaskClick: (Task) -> Unit,
+    onAddTaskClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val accentColor = when (title) {
@@ -161,7 +183,7 @@ fun KanbanColumn(
             
             // Add Task Placeholder
             Surface(
-                modifier = Modifier.fillMaxWidth().height(48.dp).clickable { /* Add */ },
+                modifier = Modifier.fillMaxWidth().height(48.dp).clickable { onAddTaskClick() },
                 color = Color.Transparent,
                 shape = RoundedCornerShape(8.dp),
                 border = androidx.compose.foundation.BorderStroke(1.dp, ArgepColors.Slate300)
@@ -206,7 +228,7 @@ fun KanbanTaskCard(task: Task, onClick: () -> Unit) {
                         color = priorityColor
                     )
                 }
-                Text(task.createdAt.take(10), style = MaterialTheme.typography.labelSmall, color = ArgepColors.Slate500, fontSize = 9.sp)
+                Text(task.createdAt?.take(10) ?: "", style = MaterialTheme.typography.labelSmall, color = ArgepColors.Slate500, fontSize = 9.sp)
             }
             
             Spacer(modifier = Modifier.height(8.dp))

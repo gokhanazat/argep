@@ -16,6 +16,119 @@ import androidx.compose.ui.unit.sp
 import com.argesurec.shared.model.Task
 import com.argesurec.shared.model.TaskPriority
 import com.argesurec.shared.ui.theme.ArgepColors
+import androidx.compose.ui.draw.shadow
+
+@Composable
+fun ExecutiveStatCard(
+    label: String,
+    value: String,
+    trend: String,
+    icon: String,
+    iconBg: Color = ArgepColors.ExecutiveSurfaceLow,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.shadow(
+            elevation = 0.dp, // No standard shadow
+            spotColor = ArgepColors.ExecutivePrimary.copy(alpha = 0.08f)
+        ),
+        colors = CardDefaults.cardColors(containerColor = ArgepColors.White),
+        shape = RoundedCornerShape(12.dp)
+    ) {
+        Column(modifier = Modifier.padding(24.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()) {
+                Surface(
+                    modifier = Modifier.size(40.dp),
+                    shape = RoundedCornerShape(8.dp),
+                    color = iconBg
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Text(icon, fontSize = 20.sp)
+                    }
+                }
+                
+                Surface(
+                    color = if (trend.contains("+") || trend.contains("↑")) ArgepColors.Phase3Light else ArgepColors.Phase2Light,
+                    shape = RoundedCornerShape(4.dp)
+                ) {
+                    Text(
+                        trend,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (trend.contains("+") || trend.contains("↑")) ArgepColors.Phase3 else ArgepColors.Phase2
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Text(
+                text = label.uppercase(),
+                style = MaterialTheme.typography.labelSmall.copy(letterSpacing = 0.05.sp, fontWeight = FontWeight.Bold),
+                color = ArgepColors.Slate500
+            )
+            
+            Text(
+                text = value,
+                style = MaterialTheme.typography.displayLarge.copy(fontSize = 32.sp), 
+                color = ArgepColors.ExecutivePrimary
+            )
+        }
+    }
+}
+
+@Composable
+fun ExecutiveProjectRow(
+    name: String,
+    phase: String,
+    progress: Float,
+    status: String = "Normal"
+) {
+    Column(modifier = Modifier.padding(vertical = 12.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = ArgepColors.ExecutivePrimary)
+            Text(
+                "${(progress * 100).toInt()}%",
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
+                color = ArgepColors.ExecutivePrimary
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        LinearProgressIndicator(
+            progress = progress,
+            modifier = Modifier.fillMaxWidth().height(4.dp), // Architectural: Slim, no round ends logic below
+            color = ArgepColors.ExecutiveSecondary,
+            trackColor = ArgepColors.ExecutiveSurfaceLow,
+            strokeCap = androidx.compose.ui.graphics.StrokeCap.Butt 
+        )
+    }
+}
+
+@Composable
+fun ExecutiveButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.height(48.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = ArgepColors.ExecutivePrimary),
+        shape = RoundedCornerShape(8.dp),
+        contentPadding = PaddingValues(horizontal = 24.dp)
+    ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelMedium.copy(letterSpacing = 0.02.sp),
+            color = ArgepColors.White
+        )
+    }
+}
 
 @Composable
 fun PremiumStatCard(

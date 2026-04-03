@@ -41,7 +41,7 @@ class SupabaseTaskRepository(
     override suspend fun update(item: Task): Result<Task> {
         return try {
             val result = supabase.from("tasks").update(item) {
-                filter { eq("id", item.id) }
+                filter { eq("id", item.id!!) }
                 select()
             }.decodeSingle<Task>()
             Result.success(result)

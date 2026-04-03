@@ -581,7 +581,6 @@ fun InfoPanel(
                 com.argesurec.shared.ui.team.InviteMemberDialog(
                     onDismiss = { showInviteDialog = false },
                     onInvite = { email, role ->
-                        println("DIAGNOSTIC: onInvite triggered in UI with email: $email")
                         teamViewModel.inviteMember(email, role, project.id!!)
                         showInviteDialog = false
                     }
@@ -597,7 +596,6 @@ fun InfoPanel(
                     Text("Proje Ekibi", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                     IconButton(
                         onClick = { 
-                            println("DIAGNOSTIC: Invite Member Button Clicked!")
                             showInviteDialog = true 
                         },
                         modifier = Modifier.size(32.dp).background(ArgepColors.Navy700, CircleShape)

@@ -68,15 +68,15 @@ data class Milestone(
 
 @Serializable
 data class Task(
-    @SerialName("id") val id: String,
+    @SerialName("id") val id: String? = null,
     @SerialName("milestone_id") val milestoneId: String,
     @SerialName("title") val title: String,
     @SerialName("description") val description: String? = null,
     @SerialName("assigned_to") val assignedTo: String? = null,
     @SerialName("priority") val priority: TaskPriority,
     @SerialName("status") val status: TaskStatus,
-    @SerialName("created_at") val createdAt: String,
-    @SerialName("updated_at") val updatedAt: String
+    @SerialName("created_at") val createdAt: String? = null,
+    @SerialName("updated_at") val updatedAt: String? = null
 )
 
 @Serializable

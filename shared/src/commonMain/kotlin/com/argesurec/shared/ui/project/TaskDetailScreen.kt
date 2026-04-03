@@ -104,9 +104,15 @@ class TaskDetailScreen(private val taskId: String) : Screen {
                                 Text("DURUM GÜNCELLE", style = MaterialTheme.typography.labelSmall, color = ArgepColors.Slate500, fontWeight = FontWeight.Bold)
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                    StatusButton("Bekliyor", task.status == TaskStatus.TODO, ArgepColors.Phase2)
-                                    StatusButton("Devam Ediyor", task.status == TaskStatus.IN_PROGRESS, ArgepColors.Phase1)
-                                    StatusButton("Tamamlandı", task.status == TaskStatus.DONE, ArgepColors.Phase3)
+                                    StatusButton("Bekliyor", task.status == TaskStatus.TODO, ArgepColors.Phase2) {
+                                        viewModel.updateTaskStatus(task.id!!, task.milestoneId, TaskStatus.TODO)
+                                    }
+                                    StatusButton("Devam Ediyor", task.status == TaskStatus.IN_PROGRESS, ArgepColors.Phase1) {
+                                        viewModel.updateTaskStatus(task.id!!, task.milestoneId, TaskStatus.IN_PROGRESS)
+                                    }
+                                    StatusButton("Tamamlandı", task.status == TaskStatus.DONE, ArgepColors.Phase3) {
+                                        viewModel.updateTaskStatus(task.id!!, task.milestoneId, TaskStatus.DONE)
+                                    }
                                 }
                             }
                         }
@@ -140,7 +146,7 @@ class TaskDetailScreen(private val taskId: String) : Screen {
                                         DropdownMenuItem(
                                             text = { Text("Atamayı Kaldır") },
                                             onClick = {
-                                                viewModel.updateTaskAssignment(task.id, null)
+                                                viewModel.updateTaskAssignment(task.id!!, null)
                                                 showAssignDropdown = false
                                             }
                                         )
@@ -149,7 +155,7 @@ class TaskDetailScreen(private val taskId: String) : Screen {
                                                 DropdownMenuItem(
                                                     text = { Text(member.profile?.fullName ?: "İsimsiz") },
                                                     onClick = {
-                                                        viewModel.updateTaskAssignment(task.id, member.userId)
+                                                        viewModel.updateTaskAssignment(task.id!!, member.userId)
                                                         showAssignDropdown = false
                                                     }
                                                 )
@@ -193,9 +199,9 @@ fun TaskDetailRow(label: String, valueContent: @Composable () -> Unit) {
 }
 
 @Composable
-fun StatusButton(label: String, isActive: Boolean, activeColor: Color) {
+fun StatusButton(label: String, isActive: Boolean, activeColor: Color, onClick: () -> Unit) {
     Surface(
-        modifier = Modifier.height(40.dp).clickable { /* Update */ },
+        modifier = Modifier.height(40.dp).clickable { onClick() },
         color = if (isActive) activeColor else ArgepColors.Slate50,
         shape = RoundedCornerShape(8.dp),
         border = if (!isActive) androidx.compose.foundation.BorderStroke(1.dp, ArgepColors.Slate200) else null

@@ -43,6 +43,13 @@ object ArgepColors {
     val Phase3 = Color(0xFF10B981) // Commercialization (Emerald)
     val Phase3Light = Color(0xFFECFDF5)
 
-    // Generic
     val White = Color(0xFFFFFFFF)
+
+    // Executive Ledger Theme (Web Only)
+    val ExecutivePrimary = Color(0xFF0D1B2A) // Deep Navy
+    val ExecutiveSecondary = Color(0xFF3B82F6) // Corporate Blue
+    val ExecutiveBackground = Color(0xFFF7F9FD) // Ice Gray Canvas
+    val ExecutiveSurface = Color(0xFFFFFFFF)
+    val ExecutiveSurfaceLow = Color(0xFFF2F4F8)
+    val ExecutiveOnSurface = Color(0xFF191C1F)
 }

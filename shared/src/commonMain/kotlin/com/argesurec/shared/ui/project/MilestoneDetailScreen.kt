@@ -52,7 +52,7 @@ class MilestoneDetailScreen(private val milestoneId: String) : Screen {
                     },
                     actions = {
                         Button(
-                            onClick = { /* Görevleri Gör */ },
+                            onClick = { navigator.push(TasksScreen(milestoneId)) },
                             colors = ButtonDefaults.buttonColors(containerColor = ArgepColors.Navy700),
                             shape = RoundedCornerShape(7.dp)
                         ) {

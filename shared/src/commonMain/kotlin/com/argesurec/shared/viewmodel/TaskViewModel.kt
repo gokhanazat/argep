@@ -87,15 +87,15 @@ class TaskViewModel(
     ) {
         viewModelScope.launch {
             val newTask = Task(
-                id = "",
+                id = null,
                 milestoneId = milestoneId,
                 title = titleInput,
                 description = descriptionInput,
                 priority = priorityInput,
                 status = TaskStatus.TODO,
                 assignedTo = assignedToInput,
-                createdAt = "",
-                updatedAt = ""
+                createdAt = null,
+                updatedAt = null
             )
             val result = repository.insert(newTask)
             if (result.isSuccess) {

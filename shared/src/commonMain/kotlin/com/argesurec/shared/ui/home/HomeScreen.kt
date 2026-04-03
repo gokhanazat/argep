@@ -33,6 +33,9 @@ import com.argesurec.shared.viewmodel.ProjectsData
 import com.argesurec.shared.viewmodel.TaskViewModel
 import com.argesurec.shared.viewmodel.TaskData
 
+import com.argesurec.shared.viewmodel.TaskData
+import com.argesurec.shared.util.isWeb
+
 class HomeScreen : Screen {
     @Composable
     override fun Content() {
@@ -45,25 +48,146 @@ class HomeScreen : Screen {
         val taskUiState by taskViewModel.state.collectAsState()
         val projectsUiState by projectsViewModel.state.collectAsState()
 
+        val userName = authState.currentUser?.userMetadata?.get("full_name")?.jsonPrimitive?.content ?: "Kullanıcı"
+
         LaunchedEffect(Unit) {
             taskViewModel.loadAssignedTasks()
             projectsViewModel.loadProjects()
         }
 
-        Scaffold(
-            topBar = {
-                val userName = authState.currentUser?.userMetadata?.get("full_name")?.jsonPrimitive?.content ?: "Kullanıcı"
-                DashboardTopBar(userName)
+        if (isWeb) {
+            ExecutiveDashboard(
+                userName = userName,
+                taskUiState = taskUiState,
+                projectsUiState = projectsUiState,
+                onTaskClick = { id -> navigator.push(TaskDetailScreen(id)) }
+            )
+        } else {
+            MobileDashboard(
+                userName = userName,
+                taskUiState = taskUiState,
+                projectsUiState = projectsUiState,
+                navigator = navigator
+            )
+        }
+    }
+}
+
+@Composable
+fun ExecutiveDashboard(
+    userName: String,
+    taskUiState: UiState<TaskData>,
+    projectsUiState: UiState<ProjectsData>,
+    onTaskClick: (String) -> Unit
+) {
+    Row(modifier = Modifier.fillMaxSize().background(ArgepColors.ExecutiveBackground)) {
+        // Sidebar (Minimalist)
+        Column(
+            modifier = Modifier
+                .width(260.dp)
+                .fillMaxHeight()
+                .background(ArgepColors.ExecutivePrimary)
+                .padding(24.dp)
+        ) {
+            Text("Argep", style = MaterialTheme.typography.headlineSmall, color = ArgepColors.White)
+            Spacer(modifier = Modifier.height(48.dp))
+            ExecutiveNavItem("Dashboard", true)
+            ExecutiveNavItem("Projeler", false)
+            ExecutiveNavItem("Görevler", false)
+            ExecutiveNavItem("Raporlar", false)
+            Spacer(modifier = Modifier.weight(1f))
+            ExecutiveNavItem("Destek", false)
+        }
+
+        // Main Content Area
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+                .verticalScroll(rememberScrollState())
+                .padding(48.dp)
+        ) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Column {
+                    Text("Executive Dashboard", style = MaterialTheme.typography.displayLarge.copy(fontSize = 32.sp), color = ArgepColors.ExecutivePrimary)
+                    Text("Gerçek zamanlı ekosistem performansı.", style = MaterialTheme.typography.bodyMedium, color = ArgepColors.Slate500)
+                }
+                ExecutiveButton("Yeni Girişim", onClick = {})
             }
-        ) { padding ->
-            Column(
-                modifier = Modifier
-                    .padding(padding)
-                    .fillMaxSize()
-                    .background(ArgepColors.Slate100)
-                    .verticalScroll(rememberScrollState())
-                    .padding(24.dp)
-            ) {
+
+            Spacer(modifier = Modifier.height(48.dp))
+
+            // Stat Cards Grid (Desktop First)
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+                val activePrj = (projectsUiState as? UiState.Success<ProjectsData>)?.data?.activeProjectsCount ?: 0
+                val pendingTsk = (taskUiState as? UiState.Success<TaskData>)?.data?.pendingTasksCount ?: 0
+                val completedTsk = (taskUiState as? UiState.Success<TaskData>)?.data?.completedTasksCount ?: 0
+
+                ExecutiveStatCard("Aktif Projeler", activePrj.toString(), "↑ 12%", "◫", modifier = Modifier.weight(1f))
+                ExecutiveStatCard("Bekleyen Görevler", pendingTsk.toString(), "Kritik", "⌛", modifier = Modifier.weight(1f))
+                ExecutiveStatCard("Tamamlanan", completedTsk.toString(), "Başarı", "✓", modifier = Modifier.weight(1f))
+                ExecutiveStatCard("Geciken", "07", "↓ 5%", "!", modifier = Modifier.weight(1f))
+            }
+
+            Spacer(modifier = Modifier.height(48.dp))
+
+            // Asymmetric Content Grid
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(48.dp)) {
+                // Left: Tasks List (Architectural Width: 65%)
+                Column(modifier = Modifier.weight(0.65f)) {
+                    DashboardSectionCard(title = "Bana Atanan Görevler", badge = "Görünürlük Yüksek") {
+                        when (val uiState = taskUiState) {
+                            is UiState.Success<TaskData> -> {
+                                uiState.data.assignedTasks.take(4).forEach { task ->
+                                    PremiumTaskRow(task, onClick = { onTaskClick(task.id!!) })
+                                }
+                            }
+                            else -> Box(Modifier.fillMaxWidth().height(100.dp))
+                        }
+                    }
+                }
+
+                // Right: Roadmap (Architectural Width: 35%)
+                Column(modifier = Modifier.weight(0.35f)) {
+                    DashboardSectionCard(title = "Proje Yol Haritası") {
+                        when (val uiState = projectsUiState) {
+                            is UiState.Success<ProjectsData> -> {
+                                uiState.data.projects.take(4).forEach { project ->
+                                    ExecutiveProjectRow(project.name, project.phase.name, 0.65f)
+                                }
+                            }
+                            else -> Box(Modifier.fillMaxWidth().height(100.dp))
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ExecutiveNavItem(label: String, active: Boolean) {
+    Surface(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+        color = if (active) ArgepColors.ExecutiveSecondary.copy(alpha = 0.2f) else Color.Transparent,
+        shape = RoundedCornerShape(8.dp)
+    ) {
+        Text(
+            label,
+            modifier = Modifier.padding(12.dp),
+            style = MaterialTheme.typography.titleMedium,
+            color = if (active) ArgepColors.White else ArgepColors.White.copy(alpha = 0.7f)
+        )
+    }
+}
+
+@Composable
+fun MobileDashboard(
+    userName: String,
+    taskUiState: UiState<TaskData>,
+    projectsUiState: UiState<ProjectsData>,
+    navigator: cafe.adriel.voyager.navigator.Navigator
+) {
                 // Stat Grid
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
                     val activePrj = (projectsUiState as? UiState.Success<ProjectsData>)?.data?.activeProjectsCount ?: 0
@@ -91,7 +215,7 @@ class HomeScreen : Screen {
                             is UiState.Error -> Text(uiState.message, color = ArgepColors.Error)
                             is UiState.Success<TaskData> -> {
                                 uiState.data.assignedTasks.take(5).forEach { task ->
-                                    PremiumTaskRow(task, onClick = { navigator.push(TaskDetailScreen(task.id)) })
+                                    PremiumTaskRow(task, onClick = { navigator.push(TaskDetailScreen(task.id!!)) })
                                 }
                             }
                         }

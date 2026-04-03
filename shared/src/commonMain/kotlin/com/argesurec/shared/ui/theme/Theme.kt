@@ -4,10 +4,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.argesurec.shared.util.isWeb
 
 private val LightColorScheme = lightColorScheme(
     primary = ArgepColors.Navy700,
@@ -41,11 +43,31 @@ private val DarkColorScheme = androidx.compose.material3.darkColorScheme(
     outline = ArgepColors.Navy600,
 )
 
+private val ExecutiveColorScheme = lightColorScheme(
+    primary = ArgepColors.ExecutivePrimary,
+    onPrimary = ArgepColors.White,
+    secondary = ArgepColors.ExecutiveSecondary,
+    onSecondary = ArgepColors.White,
+    surface = ArgepColors.ExecutiveSurface,
+    onSurface = ArgepColors.ExecutiveOnSurface,
+    background = ArgepColors.ExecutiveBackground,
+    onBackground = ArgepColors.ExecutiveOnSurface,
+    surfaceVariant = ArgepColors.ExecutiveSurfaceLow
+)
+
 private val ArgepTypography = Typography(
-    headlineMedium = TextStyle(
+    displayLarge = TextStyle(
         fontWeight = FontWeight.Bold,
-        fontSize = 28.sp,
-        letterSpacing = 0.sp
+        fontSize = 56.sp,
+        letterSpacing = (-1.1).sp,
+        lineHeight = 64.sp
+    ),
+    headlineLarge = TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontSize = 32.sp,
+        letterSpacing = 0.sp,
+        lineHeight = 40.sp,
+        color = ArgepColors.ExecutivePrimary
     ),
     headlineSmall = TextStyle(
         fontWeight = FontWeight.SemiBold,
@@ -80,7 +102,11 @@ fun ArgepTheme(
     darkTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
+    val colorScheme = when {
+        isWeb -> ExecutiveColorScheme
+        darkTheme -> DarkColorScheme
+        else -> LightColorScheme
+    }
     
     MaterialTheme(
         colorScheme = colorScheme,

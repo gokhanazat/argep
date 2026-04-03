@@ -1,5 +1,6 @@
 package com.argesurec.shared.ui.auth
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -20,6 +22,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.argesurec.shared.viewmodel.AuthViewModel
 import com.argesurec.shared.ui.theme.ArgepColors
 import com.argesurec.shared.util.isWeb
+import org.jetbrains.compose.resources.painterResource
+import argep.shared.generated.resources.Res
+import argep.shared.generated.resources.login_hero
 
 class LoginScreen : Screen {
     @Composable
@@ -49,7 +54,7 @@ class LoginScreen : Screen {
                     onPasswordChange = { password = it },
                     onRememberMeChange = { rememberMe = it },
                     onLoginClick = { viewModel.signIn(email, password) },
-                    onRegisterClick = { navigator.push(RegisterScreen()) } // Passes the action correctly
+                    onRegisterClick = { navigator.push(RegisterScreen()) }
                 )
             }
         } else {
@@ -77,7 +82,7 @@ class LoginScreen : Screen {
         onPasswordChange: (String) -> Unit,
         onRememberMeChange: (Boolean) -> Unit,
         onLoginClick: () -> Unit,
-        onRegisterClick: () -> Unit // Action passed from Content
+        onRegisterClick: () -> Unit
     ) {
         Surface(
             modifier = Modifier
@@ -104,14 +109,23 @@ class LoginScreen : Screen {
                             .background(Color.White, RoundedCornerShape(110.dp)),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            "LOGO", 
-                            color = ArgepColors.ExecutivePrimary, 
-                            style = MaterialTheme.typography.displayLarge.copy(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 48.sp
+                        try {
+                            Image(
+                                painter = painterResource(Res.drawable.login_hero),
+                                contentDescription = "Logo",
+                                modifier = Modifier.size(180.dp),
+                                contentScale = ContentScale.Fit
                             )
-                        )
+                        } catch (e: Exception) {
+                            Text(
+                                "LOGO", 
+                                color = ArgepColors.ExecutivePrimary, 
+                                style = MaterialTheme.typography.displayLarge.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 48.sp
+                                )
+                            )
+                        }
                     }
                     
                     Spacer(modifier = Modifier.height(32.dp))
@@ -226,7 +240,7 @@ class LoginScreen : Screen {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text("Hesabınız yok mu?", style = MaterialTheme.typography.bodySmall, color = ArgepColors.Slate500)
-                        TextButton(onClick = onRegisterClick) { // Correctly uses the passed action
+                        TextButton(onClick = onRegisterClick) {
                             Text("Kaydolun", color = ArgepColors.ExecutiveSecondary, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                         }
                     }

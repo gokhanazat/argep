@@ -228,7 +228,7 @@ class LoginScreen : Screen {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text("Hesabınız yok mu?", style = MaterialTheme.typography.bodySmall, color = ArgepColors.Slate500)
-                        TextButton(onClick = { navigator.push(RegisterScreen()) }) {
+                        TextButton(onClick = onRegisterClick) {
                             Text("Kaydolun", color = ArgepColors.ExecutiveSecondary, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                         }
                     }

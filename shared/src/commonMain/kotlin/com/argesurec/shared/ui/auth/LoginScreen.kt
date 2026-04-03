@@ -21,9 +21,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.argesurec.shared.viewmodel.AuthViewModel
 import com.argesurec.shared.ui.theme.ArgepColors
 import com.argesurec.shared.util.isWeb
-import org.jetbrains.compose.resources.painterResource
-import argep.shared.generated.resources.Res
-import argep.shared.generated.resources.login_hero
+// import org.jetbrains.compose.resources.painterResource
+// import argep.shared.generated.resources.Res
+// import argep.shared.generated.resources.login_hero
 
 class LoginScreen : Screen {
     @Composable
@@ -92,16 +92,20 @@ class LoginScreen : Screen {
                         .background(Color.White.copy(alpha = 0.05f), RoundedCornerShape(140.dp)),
                     contentAlignment = Alignment.Center
                 ) {
-                    try {
-                        Image(
-                            painter = painterResource(Res.drawable.login_hero),
-                            contentDescription = "Logo",
-                            modifier = Modifier.size(240.dp),
-                            contentScale = ContentScale.Fit
-                        )
-                    } catch (e: Exception) {
-                        Text("Logo", color = Color.White.copy(alpha = 0.3f), style = MaterialTheme.typography.headlineLarge)
-                    }
+                    // Temporarily disabled to avoid build error until user adds the image
+                    Text(
+                        "LOGO", 
+                        color = Color.White.copy(alpha = 0.2f), 
+                        style = MaterialTheme.typography.displayLarge
+                    )
+                    /* 
+                    Image(
+                        painter = painterResource(Res.drawable.login_hero),
+                        contentDescription = "Logo",
+                        modifier = Modifier.size(240.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                    */
                 }
                 
                 Spacer(modifier = Modifier.height(48.dp))

@@ -1,0 +1,16 @@
+name: Supabase Keep Alive
+
+on:
+  schedule:
+    - cron: '0 6 * * 1,4'
+  workflow_dispatch:
+
+jobs:
+  ping_supabase:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Request
+        run: |
+          curl -i -X GET "https://poelkfxcehixweytutrl.supabase.co/rest/v1/expenses?select=id&limit=1" \
+          -H "apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvZWxrZnhjZWhpeHdleXR1dHJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTQwMzAsImV4cCI6MjA5MDQzMDAzMH0.Wo_Axkp4-0meFv099XrNZSXgGq9xiHyaU9H1DoMtVaA" \
+          -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBvZWxrZnhjZWhpeHdleXR1dHJsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ4NTQwMzAsImV4cCI6MjA5MDQzMDAzMH0.Wo_Axkp4-0meFv099XrNZSXgGq9xiHyaU9H1DoMtVaA"
